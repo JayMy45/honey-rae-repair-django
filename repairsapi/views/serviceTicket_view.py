@@ -25,3 +25,4 @@ class ServiceTicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceTicket 
         fields = ('id', 'customer', 'employee', 'description', 'emergency', 'date_completed')
+        depth = 1
