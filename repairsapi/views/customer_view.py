@@ -15,7 +15,7 @@ class CustomerView(ViewSet):
         Returns:
             Response -- JSON serialized list of customers
         """
-
+        
         customers = Customer.objects.all()
         serialized = CustomerSerializer(customers, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
