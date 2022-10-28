@@ -4,12 +4,12 @@ from django.urls import path
 from repairsapi.views import register_user, login_user
 from rest_framework import routers
 from repairsapi.views import CustomerView, EmployeeView
-from repairsapi.views.serviceTicket_view import ServiceTicketView
+from repairsapi.views import ServiceTicketView
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'customers', CustomerView, 'customer')
 router.register(r'employees', EmployeeView, 'employee')
-router.register(r'service-tickets', ServiceTicketView, 'service-ticket')
+router.register(r'tickets', ServiceTicketView, 'ticket')
 
 urlpatterns = [
     path('register', register_user),
