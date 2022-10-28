@@ -27,9 +27,21 @@ class ServiceTicketView(ViewSet):
         return Response(serialized.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        
-        service_ticket = ServiceTicket.objects.all()
-        serialized = ServiceTicketSerializer(service_ticket, many=True)
+
+        service_tickets = []
+
+        if "status" in request.query_params:
+            if request.query_params['status'] == "done":
+                service_tickets = ServiceTicket.objects.filter(date_completed__isnull=False)
+
+            if request.query_params['status'] == "all":
+                service_tickets = ServiceTicket.objects.all()
+
+        else:
+            service_tickets = ServiceTicket.objects.all()
+
+
+        serialized = ServiceTicketSerializer(service_tickets, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
