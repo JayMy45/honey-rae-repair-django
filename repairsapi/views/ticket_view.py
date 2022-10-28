@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from repairsapi.models import ServiceTicket, employee
+from repairsapi.models import ServiceTicket
 from repairsapi.models import Employee
 from repairsapi.models.customer import Customer
 
@@ -49,6 +49,32 @@ class ServiceTicketView(ViewSet):
             service_ticket = ServiceTicket.objects.get(pk=pk)
             serialized = ServiceTicketSerializer(service_ticket, context={'request': request})
             return Response(serialized.data, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        """Handles PUT request of single customer
+        Returns: 
+                Response - No response body status just (204) status
+        """
+
+        # Select the targeted ticket using pk
+        ticket = ServiceTicket.objects.get(pk=pk)
+
+        # Get the employee id from the client requests. employee is the key requested from client
+        employee_id = request.data['employee']
+       
+        # Select the employee from the database using that id
+        assigned_employee = Employee.objects.get(pk=employee_id)
+
+        # Assign that Employee instance to the employee property of the ticket
+        ticket.employee = assigned_employee
+
+        # Save the updated ticket
+        ticket.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+
     
 class TicketEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
