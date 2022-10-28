@@ -10,6 +10,22 @@ from repairsapi.models.customer import Customer
 class ServiceTicketView(ViewSet):
     """Honey Rae API ServiceTicket view"""
 
+    def create(self, request):
+        """Handle POST requests for service tickets
+
+        Returns:
+            Response: JSON serialized representation of newly created service ticket
+        """
+        new_ticket = ServiceTicket()
+        new_ticket.customer = Customer.objects.get(user=request.auth.user)
+        new_ticket.description = request.data['description']
+        new_ticket.emergency = request.data['emergency']
+        new_ticket.save()
+
+        serialized = ServiceTicketSerializer(new_ticket, many=False)
+
+        return Response(serialized.data, status=status.HTTP_201_CREATED)
+    
     def list(self, request):
         
         service_ticket = ServiceTicket.objects.all()
@@ -36,7 +52,7 @@ class ServiceTicketSerializer(serializers.ModelSerializer):
         # for the employee field I want to use the serializer; many equals false
     employee = TicketEmployeeSerializer(many=False)
     customer = TicketCustomerSerializer(many=False)
-    
+
     class Meta:
         model = ServiceTicket 
         fields = ('id', 'description', 'emergency', 'date_completed', 'employee', 'customer' )
