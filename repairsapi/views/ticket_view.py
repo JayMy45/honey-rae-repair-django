@@ -3,15 +3,27 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from repairsapi.models import ServiceTicket
+from repairsapi.models import ServiceTicket, service_ticket
 from repairsapi.models import Employee
 from repairsapi.models.customer import Customer
 
 class ServiceTicketView(ViewSet):
     """Honey Rae API ServiceTicket view"""
+    
+    def destroy(self, request, pk=None):
+        """
+        Handles DELETE requests for service tickets
+
+        Returns:
+            Response: None with 204 status code
+        """
+        service_ticket = ServiceTicket.objects.get(pk=pk)
+        service_ticket.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request):
-        """Handle POST requests for service tickets
+        """
+        Handle POST requests for service tickets
 
         Returns:
             Response: JSON serialized representation of newly created service ticket
@@ -74,6 +86,7 @@ class ServiceTicketView(ViewSet):
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
+        
 
     
 class TicketEmployeeSerializer(serializers.ModelSerializer):
